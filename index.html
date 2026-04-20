@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixMate – Home Service App Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1A6EFA;
+    --blue-dark: #1250C8;
+    --blue-light: #EAF1FF;
+    --green: #12B07A;
+    --green-light: #E6F9F2;
+    --bg: #F4F7FB;
+    --white: #FFFFFF;
+    --text: #1A2340;
+    --text2: #5A6580;
+    --border: #E2E8F0;
+    --shadow: 0 4px 24px rgba(26,110,250,0.10);
+    --radius: 18px;
+    --radius-sm: 12px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #0f2a6b 0%, #1A6EFA 50%, #12B07A 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 16px 40px;
+  }
+
+  h1.app-title {
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .app-subtitle {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.82rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 360px;
+    min-height: 700px;
+    background: var(--bg);
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    position: relative;
+    border: 3px solid rgba(255,255,255,0.18);
+  }
+
+  /* Screens */
+  .screen {
+    display: none;
+    width: 100%;
+    min-height: 700px;
+    flex-direction: column;
+    background: var(--bg);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .screen.active { display: flex; }
+
+  /* ── SPLASH ── */
+  #splash {
+    background: linear-gradient(160deg, #1250C8 0%, #1A6EFA 45%, #12B07A 100%);
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    cursor: pointer;
+  }
+  .splash-logo-wrap {
+    width: 90px; height: 90px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 28px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .splash-logo-wrap svg { width:52px; height:52px; }
+  .splash-brand {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.4rem; font-weight: 900;
+    color: #fff; letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+  .splash-tag {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem; font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 60px;
+  }
+  .splash-loader {
+    width: 44px; height: 4px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .splash-loader-bar {
+    height: 100%; width: 0%;
+    background: #fff;
+    border-radius: 4px;
+    animation: load 2.2s ease forwards;
+  }
+  @keyframes load { to { width: 100%; } }
+  .splash-tap { color: rgba(255,255,255,0.6); font-size:0.78rem; margin-top:14px; }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px 4px;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--text);
+    background: var(--white);
+  }
+  .status-bar.dark { background: var(--blue-dark); color: #fff; }
+
+  /* ── HEADER ── */
+  .screen-header {
+    background: var(--white);
+    padding: 10px 18px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .back-btn {
+    width: 34px; height: 34px;
+    border-radius: 10px; border: none;
+    background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .screen-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: var(--text); flex: 1;
+  }
+
+  /* ── LOGIN ── */
+  #login {
+    background: var(--white);
+  }
+  .login-hero {
+    background: linear-gradient(135deg, #1250C8, #1A6EFA);
+    padding: 32px 24px 36px;
+    text-align: center;
+  }
+  .login-hero .logo-row {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .login-hero .logo-icon {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-hero h2 {
+    font-family: 'Poppins', sans-serif;
+    color: #fff; font-size: 1.5rem; font-weight: 800;
+  }
+  .login-hero p { color: rgba(255,255,255,0.8); font-size: 0.82rem; margin-top: 4px; }
+  .login-form { padding: 24px 22px; flex: 1; }
+  .form-label { font-size: 0.78rem; font-weight: 700; color: var(--text2); margin-bottom: 5px; display: block; }
+  .form-input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem; color: var(--text);
+    background: #F8FAFC; margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--blue); background: #fff; }
+  .btn-primary {
+    width: 100%; padding: 13px;
+    background: linear-gradient(90deg, #1A6EFA, #12B07A);
+    color: #fff; border: none; border-radius: var(--radius-sm);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.2px;
+    box-shadow: 0 4px 16px rgba(26,110,250,0.3);
+    transition: opacity 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-primary:active { opacity: 0.85; }
+  .divider-row { display: flex; align-items: center; gap: 10px; margin: 8px 0 12px; }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text { font-size: 0.75rem; color: var(--text2); font-weight: 600; }
+  .btn-google {
+    width: 100%; padding: 11px;
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; font-weight: 700; color: var(--text);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .link-row { text-align: center; font-size: 0.82rem; color: var(--text2); }
+  .link-row span { color: var(--blue); font-weight: 700; cursor: pointer; }
+
+  /* ── HOME ── */
+  #home-screen { background: var(--bg); }
+  .home-top {
+    background: linear-gradient(135deg, #1250C8, #1A6EFA);
+    padding: 14px 18px 24px;
+  }
+  .home-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .home-greeting { color: rgba(255,255,255,0.8); font-size: 0.78rem; }
+  .home-name {
+    font-family: 'Poppins', sans-serif;
+    color: #fff; font-size: 1.05rem; font-weight: 700;
+  }
+  .home-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff; font-size: 0.95rem;
+  }
+  .search-bar {
+    background: #fff; border-radius: var(--radius-sm);
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+  .search-bar input {
+    flex: 1; border: none; outline: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem; color: var(--text);
+    background: transparent;
+  }
+  .search-bar input::placeholder { color: #A0AEC0; }
+  .section-pad { padding: 18px 18px 0; }
+  .section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.92rem; font-weight: 700; color: var(--text);
+    margin-bottom: 12px;
+  }
+  .categories-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 20px;
+  }
+  .cat-item {
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 12px 6px; text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .cat-item:active { transform: scale(0.95); }
+  .cat-icon {
+    width: 44px; height: 44px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin: 0 auto 7px;
+  }
+  .cat-icon.blue { background: var(--blue-light); }
+  .cat-icon.green { background: var(--green-light); }
+  .cat-icon.yellow { background: #FFF8E1; }
+  .cat-icon.red { background: #FFF0F0; }
+  .cat-label { font-size: 0.7rem; font-weight: 700; color: var(--text); }
+
+  .featured-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+  .featured-scroll::-webkit-scrollbar { display: none; }
+  .featured-card {
+    min-width: 200px;
+    background: linear-gradient(135deg, #1A6EFA, #12B07A);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .featured-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: #fff; font-size: 0.68rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .featured-card h3 { color: #fff; font-size: 0.9rem; font-weight: 800; margin-bottom: 4px; }
+  .featured-card p { color: rgba(255,255,255,0.8); font-size: 0.72rem; }
+  .featured-card .featured-price {
+    color: #fff; font-size: 1rem; font-weight: 800;
+    margin-top: 10px;
+  }
+
+  .pro-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 80px; }
+  .pro-card {
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 14px; display: flex; gap: 12px; align-items: center;
+    box-shadow: var(--shadow); cursor: pointer;
+  }
+  .pro-avatar {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 900; color: #fff;
+    flex-shrink: 0;
+  }
+  .pro-info { flex: 1; }
+  .pro-name { font-weight: 800; font-size: 0.88rem; color: var(--text); }
+  .pro-tag { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+  .pro-meta { display: flex; gap: 8px; margin-top: 5px; }
+  .pro-badge {
+    font-size: 0.68rem; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-orange { background: #FFF3E0; color: #F57C00; }
+  .pro-price { font-weight: 800; font-size: 0.88rem; color: var(--blue); text-align: right; }
+  .pro-per { font-size: 0.65rem; color: var(--text2); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: sticky; bottom: 0; left: 0; right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex; z-index: 20;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .nav-item {
+    flex: 1; padding: 10px 0 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; border: none; background: transparent;
+  }
+  .nav-icon { font-size: 1.25rem; }
+  .nav-label { font-size: 0.62rem; font-weight: 700; color: var(--text2); }
+  .nav-item.active .nav-icon { filter: none; }
+  .nav-item.active .nav-label { color: var(--blue); }
+  .nav-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--blue); margin-top: 1px;
+  }
+
+  /* ── SERVICE LISTING ── */
+  .filter-bar {
+    display: flex; gap: 8px; padding: 14px 18px; overflow-x: auto;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    padding: 6px 14px; border-radius: 20px; border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+    background: var(--white); color: var(--text2);
+    border: 1.5px solid var(--border);
+  }
+  .filter-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .worker-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px; margin: 0 18px 12px;
+    box-shadow: var(--shadow);
+    display: flex; gap: 13px; cursor: pointer;
+  }
+  .worker-img {
+    width: 60px; height: 60px; border-radius: 16px;
+    background: linear-gradient(135deg, #1A6EFA, #12B07A);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0;
+  }
+  .worker-info { flex: 1; }
+  .worker-name { font-weight: 800; color: var(--text); font-size: 0.9rem; }
+  .worker-type { font-size: 0.72rem; color: var(--text2); margin-top: 1px; }
+  .rating-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .stars { color: #F59E0B; font-size: 0.8rem; }
+  .rating-val { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+  .reviews { font-size: 0.7rem; color: var(--text2); }
+  .worker-meta { display: flex; gap: 6px; margin-top: 5px; }
+  .worker-right { text-align: right; }
+  .worker-price { font-size: 1rem; font-weight: 800; color: var(--blue); }
+  .worker-hr { font-size: 0.65rem; color: var(--text2); }
+  .book-btn {
+    margin-top: 8px; padding: 6px 14px;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    cursor: pointer;
+  }
+  .dist-chip { font-size: 0.68rem; color: var(--text2); margin-top: 3px; }
+
+  /* ── BOOKING ── */
+  .booking-hero {
+    background: linear-gradient(135deg, #1250C8, #1A6EFA);
+    padding: 20px 18px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .booking-hero-img {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: #fff; flex-shrink: 0;
+  }
+  .booking-hero h3 { font-family: 'Poppins', sans-serif; color: #fff; font-weight: 700; }
+  .booking-hero p { color: rgba(255,255,255,0.8); font-size: 0.78rem; margin-top: 2px; }
+  .booking-form { padding: 18px; flex: 1; }
+  .form-section-title {
+    font-size: 0.8rem; font-weight: 700; color: var(--text2);
+    margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .date-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .date-chip {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 4px;
+    text-align: center; cursor: pointer;
+  }
+  .date-chip.selected { border-color: var(--blue); background: var(--blue-light); }
+  .date-day { font-size: 0.68rem; color: var(--text2); font-weight: 600; }
+  .date-num { font-size: 1rem; font-weight: 800; color: var(--text); }
+  .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+  .time-chip {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 10px 4px; text-align: center;
+    font-size: 0.78rem; font-weight: 700; color: var(--text2);
+    cursor: pointer;
+  }
+  .time-chip.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+  .summary-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem; padding: 5px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .summary-row:last-child { border: none; font-weight: 800; font-size: 0.9rem; }
+  .summary-row span:first-child { color: var(--text2); }
+  .summary-row span:last-child { color: var(--text); }
+  .success-overlay {
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.97);
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; z-index: 50;
+  }
+  .success-overlay.show { display: flex; }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #12B07A, #1A6EFA);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+  .success-overlay h3 { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); }
+  .success-overlay p { color: var(--text2); font-size: 0.82rem; text-align: center; padding: 0 30px; }
+
+  /* ── PROFILE ── */
+  .profile-hero {
+    background: linear-gradient(135deg, #1250C8, #1A6EFA);
+    padding: 28px 18px 24px;
+    text-align: center;
+  }
+  .profile-pic {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    border: 3px solid rgba(255,255,255,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; font-weight: 900; color: #fff;
+    margin: 0 auto 12px;
+  }
+  .profile-name { font-family: 'Poppins', sans-serif; color: #fff; font-size: 1.1rem; font-weight: 700; }
+  .profile-email { color: rgba(255,255,255,0.75); font-size: 0.78rem; margin-top: 3px; }
+  .profile-stats {
+    display: flex; background: rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm); margin-top: 16px; overflow: hidden;
+  }
+  .stat-box { flex: 1; padding: 10px 0; text-align: center; border-right: 1px solid rgba(255,255,255,0.2); }
+  .stat-box:last-child { border: none; }
+  .stat-val { color: #fff; font-size: 1.1rem; font-weight: 800; }
+  .stat-lbl { color: rgba(255,255,255,0.7); font-size: 0.65rem; margin-top: 2px; }
+  .profile-section { padding: 16px 18px; }
+  .profile-item {
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 13px 16px; display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px; cursor: pointer; box-shadow: var(--shadow);
+  }
+  .profile-item-icon {
+    width: 38px; height: 38px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .profile-item-text { flex: 1; }
+  .profile-item-text strong { display: block; font-size: 0.88rem; color: var(--text); }
+  .profile-item-text small { color: var(--text2); font-size: 0.72rem; }
+  .booking-history-item {
+    background: var(--white); border-radius: var(--radius-sm);
+    padding: 13px 16px; display: flex; gap: 12px; align-items: center;
+    margin-bottom: 8px; box-shadow: var(--shadow);
+  }
+  .history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .history-info strong { font-size: 0.85rem; color: var(--text); }
+  .history-info span { font-size: 0.72rem; color: var(--text2); display: block; margin-top: 2px; }
+  .history-status {
+    margin-left: auto; font-size: 0.68rem; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px;
+  }
+
+  /* ── BUSINESS MODEL ── */
+  .biz-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 18px; margin: 0 18px 12px;
+    box-shadow: var(--shadow); display: flex; gap: 14px; align-items: flex-start;
+  }
+  .biz-icon {
+    width: 50px; height: 50px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0;
+  }
+  .biz-info h3 { font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .biz-info p { font-size: 0.78rem; color: var(--text2); line-height: 1.4; }
+  .biz-info .amount { font-size: 0.9rem; font-weight: 800; color: var(--blue); margin-top: 6px; }
+  .revenue-bar-wrap { padding: 0 18px 16px; }
+  .revenue-bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 5px; }
+  .revenue-bar-label span:first-child { font-weight: 700; color: var(--text); }
+  .revenue-bar-label span:last-child { color: var(--blue); font-weight: 700; }
+  .revenue-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .revenue-bar-fill { height: 100%; border-radius: 4px; }
+
+  /* ── COMPETITOR ── */
+  .comp-table { margin: 0 18px; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .comp-table table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+  .comp-table th {
+    background: linear-gradient(90deg, #1A6EFA, #12B07A);
+    color: #fff; padding: 10px 8px; font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+  }
+  .comp-table th:first-child { text-align: left; padding-left: 12px; }
+  .comp-table td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+  .comp-table td:first-child { text-align: left; padding-left: 12px; font-weight: 700; color: var(--text); }
+  .comp-table tr:last-child td { border: none; }
+  .comp-table tr.highlight td { background: #EAF1FF; }
+  .comp-table .fixmate-col { font-weight: 800; color: var(--blue); }
+  .tick { color: #12B07A; font-weight: 900; }
+  .cross { color: #EF4444; }
+  .partial { color: #F59E0B; }
+
+  /* ── MARKET OPP ── */
+  .market-stat {
+    background: var(--white); border-radius: var(--radius);
+    padding: 18px; margin: 0 18px 12px;
+    box-shadow: var(--shadow); text-align: center;
+  }
+  .market-stat .big-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem; font-weight: 900; color: var(--blue);
+  }
+  .market-stat p { font-size: 0.78rem; color: var(--text2); margin-top: 4px; }
+  .market-trend {
+    background: var(--white); border-radius: var(--radius);
+    padding: 16px 18px; margin: 0 18px 12px;
+    box-shadow: var(--shadow);
+  }
+  .trend-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+  .trend-item:last-child { margin: 0; }
+  .trend-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--blue-light); color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.8rem; flex-shrink: 0;
+  }
+  .trend-text strong { font-size: 0.85rem; color: var(--text); }
+  .trend-text small { font-size: 0.72rem; color: var(--text2); display: block; margin-top: 1px; }
+
+  /* ── AI FEATURES ── */
+  .ai-hero {
+    background: linear-gradient(135deg, #0F2A6B, #1A6EFA);
+    padding: 24px 18px;
+    text-align: center;
+  }
+  .ai-hero h2 { font-family: 'Poppins', sans-serif; color: #fff; font-size: 1.1rem; font-weight: 800; }
+  .ai-hero p { color: rgba(255,255,255,0.75); font-size: 0.8rem; margin-top: 5px; }
+  .ai-feature-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 16px 18px; margin: 0 18px 10px;
+    box-shadow: var(--shadow); display: flex; gap: 12px;
+  }
+  .ai-icon {
+    width: 46px; height: 46px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .ai-feature-card h3 { font-size: 0.88rem; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+  .ai-feature-card p { font-size: 0.75rem; color: var(--text2); line-height: 1.4; }
+  .future-tag {
+    display: inline-block; margin-top: 6px;
+    background: var(--blue-light); color: var(--blue);
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+  }
+
+  /* ── CHATBOT ── */
+  .chat-area {
+    flex: 1; padding: 14px 14px 0;
+    overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+  }
+  .chat-bubble {
+    max-width: 78%; padding: 10px 14px;
+    border-radius: 16px; font-size: 0.82rem; line-height: 1.45;
+  }
+  .chat-bubble.bot {
+    background: var(--white); color: var(--text);
+    border-bottom-left-radius: 4px;
+    box-shadow: var(--shadow);
+    align-self: flex-start;
+  }
+  .chat-bubble.user {
+    background: linear-gradient(90deg, #1A6EFA, #12B07A);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  }
+  .chat-bot-name { font-size: 0.68rem; color: var(--text2); margin-bottom: 3px; display: flex; gap: 5px; align-items: center; }
+  .chat-bot-name .bot-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .chat-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .chat-sugg {
+    background: var(--blue-light); color: var(--blue);
+    font-size: 0.72rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px; cursor: pointer; border: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .chat-input-bar {
+    padding: 12px 14px;
+    background: var(--white); border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: center;
+  }
+  .chat-input {
+    flex: 1; padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px; font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; outline: none; color: var(--text);
+  }
+  .chat-send {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--blue); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── WHY US ── */
+  .why-hero {
+    background: linear-gradient(135deg, #12B07A, #1A6EFA);
+    padding: 24px 18px; text-align: center;
+  }
+  .why-hero h2 { font-family: 'Poppins', sans-serif; color: #fff; font-size: 1.15rem; font-weight: 800; }
+  .why-hero p { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin-top: 5px; }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 18px 0; }
+  .why-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 18px 14px; text-align: center; box-shadow: var(--shadow);
+  }
+  .why-card .why-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .why-card h3 { font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .why-card p { font-size: 0.72rem; color: var(--text2); line-height: 1.4; }
+  .testimonial-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 16px 18px; margin: 12px 18px;
+    box-shadow: var(--shadow);
+  }
+  .test-header { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .test-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.9rem; color: #fff;
+  }
+  .test-name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+  .test-stars { color: #F59E0B; font-size: 0.75rem; }
+  .test-text { font-size: 0.78rem; color: var(--text2); line-height: 1.45; }
+
+  /* Screen-specific bg overrides */
+  #business-model, #competitor, #market, #ai-features, #chatbot, #why-us {
+    background: var(--bg);
+  }
+
+  /* Scrollable content area in screens */
+  .screen-scroll { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+
+  /* Pill nav for desktop context */
+  .pill-nav {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .pill-btn {
+    padding: 6px 14px; border-radius: 20px; border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.9);
+    transition: background 0.15s;
+  }
+  .pill-btn:hover { background: rgba(255,255,255,0.35); }
+  .pill-btn.current { background: #fff; color: var(--blue); }
+
+  /* animate screen transitions */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .screen.active { animation: slideIn 0.25s ease; }
+
+  .screen-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--blue-light); color: var(--blue);
+    font-size: 0.72rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    margin: 0 auto 14px; display: block; text-align: center; width: fit-content;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="app-title">🔧 FixMate – Home Service App</h1>
+<p class="app-subtitle">Interactive Mobile Prototype · Tap to navigate</p>
+
+<!-- Pill nav for quick jump -->
+<div class="pill-nav" id="pillNav">
+  <button class="pill-btn current" onclick="goTo('splash')">Splash</button>
+  <button class="pill-btn" onclick="goTo('login')">Login</button>
+  <button class="pill-btn" onclick="goTo('home-screen')">Home</button>
+  <button class="pill-btn" onclick="goTo('service-listing')">Services</button>
+  <button class="pill-btn" onclick="goTo('booking')">Booking</button>
+  <button class="pill-btn" onclick="goTo('profile')">Profile</button>
+  <button class="pill-btn" onclick="goTo('business-model')">Biz Model</button>
+  <button class="pill-btn" onclick="goTo('competitor')">Competitor</button>
+  <button class="pill-btn" onclick="goTo('market')">Market</button>
+  <button class="pill-btn" onclick="goTo('ai-features')">AI</button>
+  <button class="pill-btn" onclick="goTo('chatbot')">Chatbot</button>
+  <button class="pill-btn" onclick="goTo('why-us')">Why Us</button>
+</div>
+
+<div class="phone">
+
+  <!-- ═══ SCREEN 1: SPLASH ═══ -->
+  <div class="screen active" id="splash" onclick="goTo('login')">
+    <div class="splash-logo-wrap">
+      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="20" width="10" height="28" rx="3" fill="white" fill-opacity="0.5"/>
+        <path d="M14 28 L26 10 L38 28" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="20" y="32" width="12" height="16" rx="3" fill="white"/>
+        <circle cx="38" cy="16" r="7" fill="#12B07A"/>
+        <path d="M35 16 L37 18 L41 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="splash-brand">FixMate</div>
+    <div class="splash-tag">🔧 Fix anything, anytime</div>
+    <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+    <div class="splash-tap">Tap anywhere to continue</div>
+  </div>
+
+  <!-- ═══ SCREEN 2: LOGIN ═══ -->
+  <div class="screen" id="login">
+    <div class="status-bar dark">
+      <span>9:41</span><span>📶 🔋</span>
+    </div>
+    <div class="login-hero">
+      <div class="logo-row">
+        <div class="logo-icon">🔧</div>
+        <div style="font-family:'Poppins',sans-serif;color:#fff;font-size:1.3rem;font-weight:800;">FixMate</div>
+      </div>
+      <p>Book trusted professionals, instantly</p>
+    </div>
+    <div class="login-form">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" type="email" placeholder="you@email.com" value="rahul@gmail.com">
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" placeholder="••••••••" value="••••••••">
+      <button class="btn-primary" onclick="goTo('home-screen')">Login →</button>
+      <div class="divider-row">
+        <div class="divider-line"></div>
+        <div class="divider-text">OR</div>
+        <div class="divider-line"></div>
+      </div>
+      <button class="btn-google" onclick="goTo('home-screen')">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.5 1.2 8.9 3.2l6.6-6.6C35.3 2.5 30 0 24 0 14.7 0 6.8 5.4 3 13.2l7.7 6C12.5 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.9 7.2l7.6 5.9c4.4-4.1 7.1-10.1 7.1-17.1z"/><path fill="#FBBC05" d="M10.7 28.8A14.8 14.8 0 019.5 24c0-1.7.3-3.3.8-4.8l-7.7-6A24 24 0 000 24c0 3.9.9 7.5 2.6 10.8l8.1-6z"/><path fill="#34A853" d="M24 48c6 0 11.1-2 14.8-5.4l-7.6-5.9c-2 1.4-4.6 2.3-7.2 2.3-6.2 0-11.5-4.2-13.3-9.8l-8.1 6C6.8 42.6 14.7 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="link-row">Don't have an account? <span onclick="goTo('home-screen')">Sign up free</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 3: HOME ═══ -->
+  <div class="screen" id="home-screen">
+    <div class="status-bar">
+      <span>9:41</span><span>📶 🔋</span>
+    </div>
+    <div class="home-top">
+      <div class="home-top-row">
+        <div>
+          <div class="home-greeting">Good morning 👋</div>
+          <div class="home-name">Rahul Kumar</div>
+        </div>
+        <div class="home-avatar" onclick="goTo('profile')" style="cursor:pointer">R</div>
+      </div>
+      <div class="search-bar">
+        <span style="font-size:1rem">🔍</span>
+        <input placeholder="Search for a service..." onclick="goTo('service-listing')" style="cursor:pointer" readonly>
+        <span style="font-size:1rem;cursor:pointer" onclick="goTo('service-listing')">→</span>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:70px;">
+      <div class="section-pad">
+        <div class="section-title">Our Services</div>
+        <div class="categories-grid">
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon blue">🔧</div>
+            <div class="cat-label">Plumber</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon yellow">⚡</div>
+            <div class="cat-label">Electric</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon green">🪚</div>
+            <div class="cat-label">Carpenter</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon red">❄️</div>
+            <div class="cat-label">AC Repair</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon blue">🧹</div>
+            <div class="cat-label">Cleaning</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon yellow">🎨</div>
+            <div class="cat-label">Painting</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon green">🔐</div>
+            <div class="cat-label">Security</div>
+          </div>
+          <div class="cat-item" onclick="goTo('service-listing')">
+            <div class="cat-icon red">➕</div>
+            <div class="cat-label">More</div>
+          </div>
+        </div>
+        <div class="section-title">Featured Services</div>
+      </div>
+      <div style="padding: 0 18px 0;">
+        <div class="featured-scroll">
+          <div class="featured-card" onclick="goTo('service-listing')">
+            <div class="featured-badge">⭐ TOP RATED</div>
+            <h3>AC Service & Repair</h3>
+            <p>Certified technicians, same day</p>
+            <div class="featured-price">From ₹299</div>
+          </div>
+          <div class="featured-card" style="background:linear-gradient(135deg,#12B07A,#0F7A3A);" onclick="goTo('service-listing')">
+            <div class="featured-badge">🔥 POPULAR</div>
+            <h3>Plumbing Fix</h3>
+            <p>Quick leak fixes, 24/7</p>
+            <div class="featured-price">From ₹249</div>
+          </div>
+          <div class="featured-card" style="background:linear-gradient(135deg,#7C3AED,#1A6EFA);" onclick="goTo('service-listing')">
+            <div class="featured-badge">💡 NEW</div>
+            <h3>Home Painting</h3>
+            <p>Premium interior finish</p>
+            <div class="featured-price">From ₹349</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-pad" style="padding-top:18px;">
+        <div class="section-title">Nearby Professionals</div>
+        <div class="pro-list">
+          <div class="pro-card" onclick="goTo('booking')">
+            <div class="pro-avatar" style="background:linear-gradient(135deg,#1A6EFA,#12B07A)">R</div>
+            <div class="pro-info">
+              <div class="pro-name">Ravi Sharma</div>
+              <div class="pro-tag">Plumber · 1.2 km away</div>
+              <div class="pro-meta">
+                <span class="pro-badge badge-blue">⭐ 4.9</span>
+                <span class="pro-badge badge-green">✓ Verified</span>
+              </div>
+            </div>
+            <div>
+              <div class="pro-price">₹299</div>
+              <div class="pro-per">/hour</div>
+            </div>
+          </div>
+          <div class="pro-card" onclick="goTo('booking')">
+            <div class="pro-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">M</div>
+            <div class="pro-info">
+              <div class="pro-name">Meera Patel</div>
+              <div class="pro-tag">Electrician · 0.8 km away</div>
+              <div class="pro-meta">
+                <span class="pro-badge badge-blue">⭐ 4.8</span>
+                <span class="pro-badge badge-orange">🕐 Available</span>
+              </div>
+            </div>
+            <div>
+              <div class="pro-price">₹349</div>
+              <div class="pro-per">/hour</div>
+            </div>
+          </div>
+          <div class="pro-card" onclick="goTo('booking')">
+            <div class="pro-avatar" style="background:linear-gradient(135deg,#12B07A,#0F7A3A)">S</div>
+            <div class="pro-info">
+              <div class="pro-name">Suresh Kumar</div>
+              <div class="pro-tag">Carpenter · 2.1 km away</div>
+              <div class="pro-meta">
+                <span class="pro-badge badge-blue">⭐ 4.7</span>
+                <span class="pro-badge badge-green">✓ Verified</span>
+              </div>
+            </div>
+            <div>
+              <div class="pro-price">₹279</div>
+              <div class="pro-per">/hour</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item active" onclick="goTo('home-screen')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+        <div class="nav-dot"></div>
+      </button>
+      <button class="nav-item" onclick="goTo('service-listing')">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Services</span>
+      </button>
+      <button class="nav-item" onclick="goTo('booking')">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Bookings</span>
+      </button>
+      <button class="nav-item" onclick="goTo('chatbot')">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">Chat</span>
+      </button>
+      <button class="nav-item" onclick="goTo('profile')">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 4: SERVICE LISTING ═══ -->
+  <div class="screen" id="service-listing">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goTo('home-screen')">←</button>
+      <h2>All Services</h2>
+      <span style="font-size:1.1rem;cursor:pointer" onclick="showToast('⚙️ Filter settings coming soon!')">⚙️</span>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-chip active" onclick="setFilter(this)">All</button>
+      <button class="filter-chip" onclick="setFilter(this)">Plumbing</button>
+      <button class="filter-chip" onclick="setFilter(this)">Electrical</button>
+      <button class="filter-chip" onclick="setFilter(this)">Carpentry</button>
+      <button class="filter-chip" onclick="setFilter(this)">AC Repair</button>
+      <button class="filter-chip" onclick="setFilter(this)">Cleaning</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:20px;padding-top:4px;">
+      <div class="worker-card" onclick="goTo('booking')">
+        <div class="worker-img">R</div>
+        <div class="worker-info">
+          <div class="worker-name">Ravi Sharma</div>
+          <div class="worker-type">🔧 Plumbing Expert</div>
+          <div class="rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-val">4.9</span>
+            <span class="reviews">(128 reviews)</span>
+          </div>
+          <div class="worker-meta">
+            <span class="pro-badge badge-green">✓ Verified</span>
+            <span class="dist-chip">📍 1.2 km</span>
+          </div>
+        </div>
+        <div class="worker-right">
+          <div class="worker-price">₹299</div>
+          <div class="worker-hr">/hour</div>
+          <button class="book-btn" onclick="event.stopPropagation();goTo('booking')">Book Now</button>
+        </div>
+      </div>
+      <div class="worker-card" onclick="goTo('booking')">
+        <div class="worker-img" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">M</div>
+        <div class="worker-info">
+          <div class="worker-name">Meera Patel</div>
+          <div class="worker-type">⚡ Electrician</div>
+          <div class="rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-val">4.8</span>
+            <span class="reviews">(95 reviews)</span>
+          </div>
+          <div class="worker-meta">
+            <span class="pro-badge badge-green">✓ Verified</span>
+            <span class="dist-chip">📍 0.8 km</span>
+          </div>
+        </div>
+        <div class="worker-right">
+          <div class="worker-price">₹349</div>
+          <div class="worker-hr">/hour</div>
+          <button class="book-btn" onclick="event.stopPropagation();goTo('booking')">Book Now</button>
+        </div>
+      </div>
+      <div class="worker-card" onclick="goTo('booking')">
+        <div class="worker-img" style="background:linear-gradient(135deg,#12B07A,#0F7A3A)">S</div>
+        <div class="worker-info">
+          <div class="worker-name">Suresh Kumar</div>
+          <div class="worker-type">🪚 Carpenter</div>
+          <div class="rating-row">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-val">4.7</span>
+            <span class="reviews">(72 reviews)</span>
+          </div>
+          <div class="worker-meta">
+            <span class="pro-badge badge-green">✓ Verified</span>
+            <span class="dist-chip">📍 2.1 km</span>
+          </div>
+        </div>
+        <div class="worker-right">
+          <div class="worker-price">₹279</div>
+          <div class="worker-hr">/hour</div>
+          <button class="book-btn" onclick="event.stopPropagation();goTo('booking')">Book Now</button>
+        </div>
+      </div>
+      <div class="worker-card" onclick="goTo('booking')">
+        <div class="worker-img" style="background:linear-gradient(135deg,#7C3AED,#1A6EFA)">A</div>
+        <div class="worker-info">
+          <div class="worker-name">Arjun Singh</div>
+          <div class="worker-type">❄️ AC Repair Specialist</div>
+          <div class="rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-val">4.9</span>
+            <span class="reviews">(145 reviews)</span>
+          </div>
+          <div class="worker-meta">
+            <span class="pro-badge badge-blue">⭐ Top Rated</span>
+            <span class="dist-chip">📍 1.5 km</span>
+          </div>
+        </div>
+        <div class="worker-right">
+          <div class="worker-price">₹399</div>
+          <div class="worker-hr">/hour</div>
+          <button class="book-btn" onclick="event.stopPropagation();goTo('booking')">Book Now</button>
+        </div>
+      </div>
+      <div class="worker-card" onclick="goTo('booking')">
+        <div class="worker-img" style="background:linear-gradient(135deg,#EF4444,#F97316)">P</div>
+        <div class="worker-info">
+          <div class="worker-name">Priya Nair</div>
+          <div class="worker-type">🧹 Cleaning Expert</div>
+          <div class="rating-row">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-val">4.6</span>
+            <span class="reviews">(58 reviews)</span>
+          </div>
+          <div class="worker-meta">
+            <span class="pro-badge badge-green">✓ Verified</span>
+            <span class="dist-chip">📍 3.0 km</span>
+          </div>
+        </div>
+        <div class="worker-right">
+          <div class="worker-price">₹249</div>
+          <div class="worker-hr">/hour</div>
+          <button class="book-btn" onclick="event.stopPropagation();goTo('booking')">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 5: BOOKING ═══ -->
+  <div class="screen" id="booking" style="position:relative;">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goTo('service-listing')">←</button>
+      <h2>Book Service</h2>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:20px;">
+      <div class="booking-hero">
+        <div class="booking-hero-img">🔧</div>
+        <div>
+          <h3>Ravi Sharma</h3>
+          <p>⭐ 4.9 · Plumbing Expert · 1.2 km away</p>
+          <p style="margin-top:4px;">₹299/hour</p>
+        </div>
+      </div>
+      <div class="booking-form">
+        <div class="form-section-title">Select Date</div>
+        <div class="date-grid" id="dateGrid">
+          <div class="date-chip selected" onclick="selectDate(this)"><div class="date-day">Mon</div><div class="date-num">31</div></div>
+          <div class="date-chip" onclick="selectDate(this)"><div class="date-day">Tue</div><div class="date-num">1</div></div>
+          <div class="date-chip" onclick="selectDate(this)"><div class="date-day">Wed</div><div class="date-num">2</div></div>
+          <div class="date-chip" onclick="selectDate(this)"><div class="date-day">Thu</div><div class="date-num">3</div></div>
+        </div>
+        <div class="form-section-title">Select Time</div>
+        <div class="time-grid" id="timeGrid">
+          <div class="time-chip" onclick="selectTime(this)">9:00 AM</div>
+          <div class="time-chip selected" onclick="selectTime(this)">11:00 AM</div>
+          <div class="time-chip" onclick="selectTime(this)">1:00 PM</div>
+          <div class="time-chip" onclick="selectTime(this)">3:00 PM</div>
+          <div class="time-chip" onclick="selectTime(this)">5:00 PM</div>
+          <div class="time-chip" onclick="selectTime(this)">7:00 PM</div>
+        </div>
+        <div class="form-section-title">Service Address</div>
+        <input class="form-input" placeholder="Enter your address..." value="12, Navrangpura, Ahmedabad">
+        <div class="summary-card">
+          <div class="summary-row"><span>Service</span><span>Plumbing Fix</span></div>
+          <div class="summary-row"><span>Professional</span><span>Ravi Sharma</span></div>
+          <div class="summary-row"><span>Date & Time</span><span>Mon 31, 11:00 AM</span></div>
+          <div class="summary-row"><span>Duration</span><span>~2 hours</span></div>
+          <div class="summary-row"><span>Platform Fee</span><span>₹30</span></div>
+          <div class="summary-row"><span>Total Estimate</span><span style="color:var(--blue);">₹628</span></div>
+        </div>
+        <button class="btn-primary" onclick="confirmBooking()">✅ Confirm Booking</button>
+      </div>
+    </div>
+    <!-- Success overlay -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-icon">✅</div>
+      <h3>Booking Confirmed!</h3>
+      <p>Ravi Sharma will arrive on Mon 31 at 11:00 AM. You'll get an SMS confirmation shortly.</p>
+      <button class="btn-primary" style="width:auto;padding:10px 28px;" onclick="document.getElementById('successOverlay').classList.remove('show');goTo('profile')">View My Bookings</button>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 6: PROFILE ═══ -->
+  <div class="screen" id="profile">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:70px;">
+      <div class="profile-hero">
+        <div class="profile-pic">R</div>
+        <div class="profile-name">Rahul Kumar</div>
+        <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c3e2d2439200c2b212d2520622f2321">[email&#160;protected]</a> · Ahmedabad, GJ</div>
+        <div class="profile-stats">
+          <div class="stat-box"><div class="stat-val">8</div><div class="stat-lbl">Bookings</div></div>
+          <div class="stat-box"><div class="stat-val">4.9</div><div class="stat-lbl">Avg Rating</div></div>
+          <div class="stat-box"><div class="stat-val">₹2.4k</div><div class="stat-lbl">Saved</div></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="section-title">Booking History</div>
+        <div class="booking-history-item" onclick="goTo('booking')" style="cursor:pointer">
+          <div class="history-dot" style="background:#12B07A"></div>
+          <div class="history-info">
+            <strong>Plumbing Fix – Ravi Sharma</strong>
+            <span>Mon 31 Mar · 11:00 AM · ₹628</span>
+          </div>
+          <span class="history-status" style="background:var(--green-light);color:var(--green)">Upcoming</span>
+        </div>
+        <div class="booking-history-item" onclick="goTo('booking')" style="cursor:pointer">
+          <div class="history-dot" style="background:#1A6EFA"></div>
+          <div class="history-info">
+            <strong>AC Repair – Arjun Singh</strong>
+            <span>15 Mar · ₹399</span>
+          </div>
+          <span class="history-status" style="background:var(--blue-light);color:var(--blue)">Done</span>
+        </div>
+        <div class="booking-history-item" onclick="goTo('booking')" style="cursor:pointer">
+          <div class="history-dot" style="background:#F59E0B"></div>
+          <div class="history-info">
+            <strong>Electrical – Meera Patel</strong>
+            <span>02 Mar · ₹349</span>
+          </div>
+          <span class="history-status" style="background:var(--blue-light);color:var(--blue)">Done</span>
+        </div>
+        <div class="section-title" style="margin-top:16px;">Account</div>
+        <div class="profile-item" onclick="goTo('why-us')">
+          <div class="profile-item-icon" style="background:var(--blue-light)">⭐</div>
+          <div class="profile-item-text"><strong>Why Choose FixMate?</strong><small>Our advantages</small></div>
+          <span>›</span>
+        </div>
+        <div class="profile-item" onclick="goTo('business-model')">
+          <div class="profile-item-icon" style="background:var(--green-light)">💰</div>
+          <div class="profile-item-text"><strong>Business Model</strong><small>How FixMate earns</small></div>
+          <span>›</span>
+        </div>
+        <div class="profile-item" onclick="showToast('🔔 Notifications settings coming soon!')">
+          <div class="profile-item-icon" style="background:#FFF3E0">🔔</div>
+          <div class="profile-item-text"><strong>Notifications</strong><small>Manage alerts</small></div>
+          <span>›</span>
+        </div>
+        <div class="profile-item" onclick="showToast('🔐 Privacy & Security settings coming soon!')">
+          <div class="profile-item-icon" style="background:#FFF0F0">🔐</div>
+          <div class="profile-item-text"><strong>Privacy & Security</strong><small>Account settings</small></div>
+          <span>›</span>
+        </div>
+        <div class="profile-item" onclick="goTo('login')">
+          <div class="profile-item-icon" style="background:#FFF0F0">🚪</div>
+          <div class="profile-item-text"><strong>Logout</strong><small>See you soon!</small></div>
+          <span>›</span>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="goTo('home-screen')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+      <button class="nav-item" onclick="goTo('service-listing')"><span class="nav-icon">🔍</span><span class="nav-label">Services</span></button>
+      <button class="nav-item" onclick="goTo('booking')"><span class="nav-icon">📅</span><span class="nav-label">Bookings</span></button>
+      <button class="nav-item" onclick="goTo('chatbot')"><span class="nav-icon">💬</span><span class="nav-label">Chat</span></button>
+      <button class="nav-item active" onclick="goTo('profile')"><span class="nav-icon">👤</span><span class="nav-label">Profile</span><div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 7: BUSINESS MODEL ═══ -->
+  <div class="screen" id="business-model">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goTo('profile')">←</button>
+      <h2>Business Model</h2>
+    </div>
+    <div class="screen-scroll">
+      <div style="padding:14px 18px 0;text-align:center;">
+        <div style="font-family:'Poppins',sans-serif;font-size:0.88rem;color:var(--text2);margin-bottom:14px;">💡 How FixMate Earns Revenue</div>
+      </div>
+      <div class="biz-card" onclick="showToast('📊 10–20% commission on every booking!')" style="cursor:pointer">
+        <div class="biz-icon" style="background:var(--blue-light)">📊</div>
+        <div class="biz-info">
+          <h3>Commission per Booking</h3>
+          <p>FixMate earns 10–20% commission on every service booking made through the platform.</p>
+          <div class="amount">10% – 20% per booking</div>
+        </div>
+      </div>
+      <div class="biz-card" onclick="showToast('🎟️ Small ₹20–50 convenience fee per booking')" style="cursor:pointer">
+        <div class="biz-icon" style="background:var(--green-light)">🎟️</div>
+        <div class="biz-info">
+          <h3>Platform / Service Fee</h3>
+          <p>A small convenience fee of ₹20–50 is charged to users for seamless booking and payment.</p>
+          <div class="amount">₹20 – ₹50 per booking</div>
+        </div>
+      </div>
+      <div class="biz-card" onclick="showToast('🔄 Professionals pay ₹299–999/mo for leads')" style="cursor:pointer">
+        <div class="biz-icon" style="background:#FFF3E0">🔄</div>
+        <div class="biz-info">
+          <h3>Worker Subscription</h3>
+          <p>Professionals pay a monthly subscription to receive job leads and access the platform's tools.</p>
+          <div class="amount">₹299 – ₹999 / month</div>
+        </div>
+      </div>
+      <div class="biz-card" onclick="showToast('🌟 Premium top listing for ₹499–1499/month')" style="cursor:pointer">
+        <div class="biz-icon" style="background:#FFF0F0">🌟</div>
+        <div class="biz-info">
+          <h3>Premium Listing</h3>
+          <p>Workers can pay to appear at the top of search results for higher visibility and more bookings.</p>
+          <div class="amount">₹499 – ₹1499 / month</div>
+        </div>
+      </div>
+      <div style="padding: 4px 18px 16px;">
+        <div class="section-title" style="margin-bottom:12px;">Revenue Mix</div>
+        <div class="revenue-bar-wrap">
+          <div class="revenue-bar-label"><span>Commission</span><span>45%</span></div>
+          <div class="revenue-bar"><div class="revenue-bar-fill" style="width:45%;background:var(--blue);"></div></div>
+        </div>
+        <div style="height:8px"></div>
+        <div class="revenue-bar-wrap">
+          <div class="revenue-bar-label"><span>Subscriptions</span><span>30%</span></div>
+          <div class="revenue-bar"><div class="revenue-bar-fill" style="width:30%;background:var(--green);"></div></div>
+        </div>
+        <div style="height:8px"></div>
+        <div class="revenue-bar-wrap">
+          <div class="revenue-bar-label"><span>Platform Fee</span><span>15%</span></div>
+          <div class="revenue-bar"><div class="revenue-bar-fill" style="width:15%;background:#F59E0B;"></div></div>
+        </div>
+        <div style="height:8px"></div>
+        <div class="revenue-bar-wrap">
+          <div class="revenue-bar-label"><span>Premium Listing</span><span>10%</span></div>
+          <div class="revenue-bar"><div class="revenue-bar-fill" style="width:10%;background:#EF4444;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 8: COMPETITOR ═══ -->
+  <div class="screen" id="competitor">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Competitor Analysis</h2>
+    </div>
+    <div class="screen-scroll" style="padding-top:12px;">
+      <div style="padding:0 18px 14px;text-align:center;font-size:0.8rem;color:var(--text2);">
+        FixMate vs. the competition — see why we stand out 🏆
+      </div>
+      <div class="comp-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th style="color:#38BDF8">FixMate</th>
+              <th>Urban Co.</th>
+              <th>Justdial</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>Easy Booking</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="tick">✔</td>
+              <td class="partial">~</td>
+            </tr>
+            <tr>
+              <td>Affordable</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="cross">✗</td>
+              <td class="tick">✔</td>
+            </tr>
+            <tr class="highlight">
+              <td>Fast Service</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="partial">~</td>
+              <td class="cross">✗</td>
+            </tr>
+            <tr>
+              <td>AI Support</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="cross">✗</td>
+              <td class="cross">✗</td>
+            </tr>
+            <tr class="highlight">
+              <td>Worker Rating</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="tick">✔</td>
+              <td class="partial">~</td>
+            </tr>
+            <tr>
+              <td>Real-time Track</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="tick">✔</td>
+              <td class="cross">✗</td>
+            </tr>
+            <tr class="highlight">
+              <td>Transparent Price</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="partial">~</td>
+              <td class="cross">✗</td>
+            </tr>
+            <tr>
+              <td>Chatbot Help</td>
+              <td class="fixmate-col tick">✔</td>
+              <td class="cross">✗</td>
+              <td class="cross">✗</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:14px 18px 4px;">
+        <div class="screen-badge" style="margin:0 0 12px;">✅ FixMate Advantages</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;cursor:pointer" onclick="showToast('💸 Lower commission = cheaper for users. Always!')">
+            <span style="font-size:1.2rem">💸</span>
+            <div><strong style="font-size:0.85rem;color:var(--text)">Most Affordable</strong><br><small style="color:var(--text2)">Lower commission = cheaper for users</small></div>
+          </div>
+          <div style="background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;cursor:pointer" onclick="goTo('booking')">
+            <span style="font-size:1.2rem">⚡</span>
+            <div><strong style="font-size:0.85rem;color:var(--text)">Fastest Booking</strong><br><small style="color:var(--text2)">3 taps to confirm any service</small></div>
+          </div>
+          <div style="background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;cursor:pointer" onclick="goTo('ai-features')">
+            <span style="font-size:1.2rem">🤖</span>
+            <div><strong style="font-size:0.85rem;color:var(--text)">Only AI-Powered App</strong><br><small style="color:var(--text2)">Smart recommendations & chatbot</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 9: MARKET OPPORTUNITY ═══ -->
+  <div class="screen" id="market">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Market Opportunity</h2>
+    </div>
+    <div class="screen-scroll" style="padding-top:12px;">
+      <div style="padding:0 18px 4px;">
+        <div style="background:linear-gradient(135deg,#1A6EFA,#12B07A);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:14px;">
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.8);margin-bottom:4px;">INDIA HOME SERVICES MARKET SIZE</div>
+          <div style="font-family:'Poppins',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;">₹6.3L Cr</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.8);">by 2026 · Growing at 18% YoY</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 14px;">
+        <div class="market-stat" onclick="showToast('🏙️ 500M+ urban population driving service demand!')" style="cursor:pointer"><div class="big-num">500M+</div><p>Urban population by 2030</p></div>
+        <div class="market-stat" onclick="showToast('📱 78% smartphone penetration = huge opportunity!')" style="cursor:pointer"><div class="big-num">78%</div><p>Smartphone users in tier-1 cities</p></div>
+        <div class="market-stat" onclick="showToast('💼 3.2x gig economy growth fuels our supply side!')" style="cursor:pointer"><div class="big-num">3.2x</div><p>Growth in gig economy workers</p></div>
+        <div class="market-stat" onclick="showToast('✅ 65% prefer apps — FixMate is the answer!')" style="cursor:pointer"><div class="big-num">65%</div><p>Users prefer app-based services</p></div>
+      </div>
+      <div style="padding: 0 18px 14px;">
+        <div class="section-title">Why Now?</div>
+        <div class="market-trend">
+          <div class="trend-item">
+            <div class="trend-num">1</div>
+            <div class="trend-text"><strong>Digital India surge</strong><small>2.6× increase in online service bookings post-2020</small></div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-num">2</div>
+            <div class="trend-text"><strong>Urban housing boom</strong><small>New apartments = constant demand for home services</small></div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-num">3</div>
+            <div class="trend-text"><strong>Gig workers ready</strong><small>Millions of skilled workers need a platform to reach customers</small></div>
+          </div>
+          <div class="trend-item">
+            <div class="trend-num">4</div>
+            <div class="trend-text"><strong>Fragmented market</strong><small>No single trusted app — FixMate fills this gap in tier-2 cities</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 10: AI FEATURES ═══ -->
+  <div class="screen" id="ai-features">
+    <div class="status-bar dark"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header" style="background:#0F2A6B;border-color:#1A3580;">
+      <button class="back-btn" style="background:rgba(255,255,255,0.1);" onclick="goBack()"><span style="color:#fff">←</span></button>
+      <h2 style="color:#fff">AI Features</h2>
+      <span style="font-size:1rem;color:rgba(255,255,255,0.7)">🤖</span>
+    </div>
+    <div class="screen-scroll">
+      <div class="ai-hero">
+        <div style="font-size:2rem;margin-bottom:8px">🤖</div>
+        <h2>Powered by AI</h2>
+        <p>FixMate uses intelligence to make home services faster, smarter, and more personalized.</p>
+      </div>
+      <div style="padding:14px 0 0;">
+        <div class="ai-feature-card" onclick="showToast('🎯 AI Worker Recommendation is live!')" style="cursor:pointer">
+          <div class="ai-icon" style="background:var(--blue-light)">🎯</div>
+          <div>
+            <h3>AI Worker Recommendation</h3>
+            <p>Our ML model suggests the best professional based on your location, past bookings, and problem type.</p>
+            <span class="future-tag">🚀 Live Now</span>
+          </div>
+        </div>
+        <div class="ai-feature-card" onclick="showToast('💡 Smart Pricing System — coming soon!')" style="cursor:pointer">
+          <div class="ai-icon" style="background:var(--green-light)">💡</div>
+          <div>
+            <h3>Smart Pricing System</h3>
+            <p>Dynamic pricing based on demand, distance, and service complexity — always fair and transparent.</p>
+            <span class="future-tag">🔮 Coming Soon</span>
+          </div>
+        </div>
+        <div class="ai-feature-card" onclick="goTo('chatbot')" style="cursor:pointer">
+          <div class="ai-icon" style="background:#FFF3E0">💬</div>
+          <div>
+            <h3>AI Chatbot Support</h3>
+            <p>24/7 chatbot to help you find services, answer questions, and resolve issues instantly.</p>
+            <span class="future-tag">🚀 Live Now</span>
+            <span class="future-tag" style="background:var(--green-light);color:var(--green)" onclick="goTo('chatbot')">Try it →</span>
+          </div>
+        </div>
+        <div class="ai-feature-card" onclick="showToast('🗺️ Launching in Surat, Vadodara & Pune soon!')" style="cursor:pointer">
+          <div class="ai-icon" style="background:#F0EBFF">🗺️</div>
+          <div>
+            <h3>Multi-City Expansion</h3>
+            <p>Using AI demand forecasting to identify and launch in new cities — next stop: Surat, Vadodara, Pune.</p>
+            <span class="future-tag">🔮 Coming Soon</span>
+          </div>
+        </div>
+        <div class="ai-feature-card" onclick="showToast('📊 Predictive Maintenance — coming in future scope!')" style="cursor:pointer">
+          <div class="ai-icon" style="background:#FFF0F0">📊</div>
+          <div>
+            <h3>Predictive Maintenance</h3>
+            <p>AI reminds users when their AC, plumbing, or appliances likely need servicing before they break down.</p>
+            <span class="future-tag">🔮 Future Scope</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 11: CHATBOT ═══ -->
+  <div class="screen" id="chatbot" style="background:var(--bg);">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goTo('home-screen')">←</button>
+      <div style="flex:1;">
+        <h2 style="font-size:0.9rem;">FixBot · AI Assistant</h2>
+        <div style="font-size:0.68rem;color:var(--green);font-weight:700;">🟢 Online now</div>
+      </div>
+      <span style="font-size:1.3rem">🤖</span>
+    </div>
+    <div class="chat-area" id="chatArea">
+      <div>
+        <div class="chat-bot-name"><div class="bot-dot"></div>FixBot</div>
+        <div class="chat-bubble bot">
+          👋 Hi! I'm FixBot, your AI assistant.<br><br>How can I help you today? You can ask me about services, bookings, pricing, or professionals near you!
+          <div class="chat-suggestions">
+            <button class="chat-sugg" onclick="sendChat('Find a plumber near me')">🔧 Find plumber</button>
+            <button class="chat-sugg" onclick="sendChat('AC repair cost?')">❄️ AC repair</button>
+            <button class="chat-sugg" onclick="sendChat('How to book?')">📅 How to book</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-bar">
+      <input class="chat-input" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatInput()">
+      <button class="chat-send" onclick="sendChatInput()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 12: WHY CHOOSE US ═══ -->
+  <div class="screen" id="why-us">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="screen-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <h2>Why Choose FixMate?</h2>
+    </div>
+    <div class="screen-scroll">
+      <div class="why-hero">
+        <h2>Why FixMate?</h2>
+        <p>Trusted by thousands of homeowners across India 🇮🇳</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card" onclick="goTo('service-listing')" style="cursor:pointer">
+          <div class="why-icon">📱</div>
+          <h3>Easy to Use</h3>
+          <p>Book any service in 3 simple steps — no calls needed</p>
+        </div>
+        <div class="why-card" onclick="goTo('booking')" style="cursor:pointer">
+          <div class="why-icon">⚡</div>
+          <h3>Fast Booking</h3>
+          <p>Professionals arrive within hours of booking</p>
+        </div>
+        <div class="why-card" onclick="showToast('💸 No hidden charges, ever! Transparent pricing always.')" style="cursor:pointer">
+          <div class="why-icon">💸</div>
+          <h3>Affordable</h3>
+          <p>Transparent pricing, no hidden charges ever</p>
+        </div>
+        <div class="why-card" onclick="goTo('service-listing')" style="cursor:pointer">
+          <div class="why-icon">🛡️</div>
+          <h3>Trusted Pros</h3>
+          <p>Background verified & rated professionals only</p>
+        </div>
+        <div class="why-card" onclick="goTo('ai-features')" style="cursor:pointer">
+          <div class="why-icon">🤖</div>
+          <h3>AI-Powered</h3>
+          <p>Smart matching for the best service results</p>
+        </div>
+        <div class="why-card" onclick="goTo('chatbot')" style="cursor:pointer">
+          <div class="why-icon">🕐</div>
+          <h3>24/7 Support</h3>
+          <p>We're always here via chatbot or phone</p>
+        </div>
+      </div>
+      <!-- Testimonials -->
+      <div style="padding:14px 0 0;">
+        <div class="section-title" style="padding:0 18px;">What Users Say</div>
+        <div class="testimonial-card" onclick="showToast('⭐ Ananya loved FixMate — book your first service!')" style="cursor:pointer">
+          <div class="test-header">
+            <div class="test-avatar" style="background:linear-gradient(135deg,#1A6EFA,#12B07A)">A</div>
+            <div><div class="test-name">Ananya S.</div><div class="test-stars">★★★★★</div></div>
+          </div>
+          <div class="test-text">"FixMate is amazing! Booked a plumber in 2 minutes and he was at my door within an hour. So easy!"</div>
+        </div>
+        <div class="testimonial-card" onclick="showToast('⭐ Rahul trusts FixMate — you should too!')" style="cursor:pointer">
+          <div class="test-header">
+            <div class="test-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">R</div>
+            <div><div class="test-name">Rahul K.</div><div class="test-stars">★★★★★</div></div>
+          </div>
+          <div class="test-text">"Prices are transparent and the electrician was super professional. Will use FixMate every time!"</div>
+        </div>
+        <div class="testimonial-card" style="margin-bottom:20px;cursor:pointer" onclick="showToast('⭐ Meera got same-day AC repair — try it now!')">
+          <div class="test-header">
+            <div class="test-avatar" style="background:linear-gradient(135deg,#12B07A,#0F7A3A)">M</div>
+            <div><div class="test-name">Meera N.</div><div class="test-stars">★★★★☆</div></div>
+          </div>
+          <div class="test-text">"Got my AC fixed same day at a really fair price. The app is so smooth — no confusing menus!"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .phone -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  let prevScreen = 'splash';
+  let currentScreen = 'splash';
+
+  const botReplies = {
+    'find a plumber near me': "🔧 I found 3 plumbers near you!\n\n• Ravi Sharma – ⭐4.9 – ₹299/hr – 1.2km\n• Mohan Yadav – ⭐4.7 – ₹259/hr – 2.0km\n• Ram Prasad – ⭐4.6 – ₹239/hr – 2.8km\n\nShall I book Ravi for you?",
+    'ac repair cost?': "❄️ AC repair starts from ₹299!\n\n• Gas refill: ₹599–999\n• Servicing: ₹399\n• Not cooling: ₹499–799\n\nWant me to find an AC technician near you?",
+    'how to book?': "📅 Booking is super easy!\n\n1️⃣ Search or pick a service\n2️⃣ Choose a professional\n3️⃣ Select date & time\n4️⃣ Confirm & done!\n\nWant me to take you to book now?",
+  };
+
+  function goTo(id) {
+    const all = document.querySelectorAll('.screen');
+    all.forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) {
+      prevScreen = currentScreen;
+      currentScreen = id;
+      target.classList.add('active');
+    }
+    // Update pill nav
+    const pills = document.querySelectorAll('.pill-btn');
+    pills.forEach(p => {
+      p.classList.toggle('current', p.getAttribute('onclick').includes("'"+id+"'"));
+    });
+  }
+
+  function goBack() {
+    goTo(prevScreen || 'home-screen');
+  }
+
+  function selectDate(el) {
+    document.querySelectorAll('.date-chip').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectTime(el) {
+    document.querySelectorAll('.time-chip').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function confirmBooking() {
+    document.getElementById('successOverlay').classList.add('show');
+  }
+
+  function sendChat(msg) {
+    addChatMsg(msg, 'user');
+    setTimeout(() => {
+      const key = msg.toLowerCase();
+      const reply = botReplies[key] || "I'm looking that up for you... 🔍\n\nFor immediate help, you can also browse our Services page or call us at 1800-FIX-MATE!";
+      addChatMsg(reply, 'bot');
+    }, 700);
+  }
+
+  function sendChatInput() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    sendChat(msg);
+  }
+
+  function addChatMsg(text, type) {
+    const area = document.getElementById('chatArea');
+    const wrap = document.createElement('div');
+    if (type === 'bot') {
+      wrap.innerHTML = `<div class="chat-bot-name"><div class="bot-dot"></div>FixBot</div><div class="chat-bubble bot">${text.replace(/\n/g,'<br>')}</div>`;
+    } else {
+      wrap.innerHTML = `<div class="chat-bubble user">${text}</div>`;
+      wrap.style.display = 'flex';
+      wrap.style.justifyContent = 'flex-end';
+    }
+    area.appendChild(wrap);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function setFilter(el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Toast notification system
+  function showToast(msg) {
+    let toast = document.getElementById('fixmate-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'fixmate-toast';
+      toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1A2340;color:#fff;padding:10px 20px;border-radius:20px;font-size:0.82rem;font-weight:700;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3);max-width:300px;text-align:center;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+  }
+
+  // Auto-advance splash
+  setTimeout(() => {
+    if (currentScreen === 'splash') goTo('login');
+  }, 2500);
+
+</script>
+</body>
+</html>
